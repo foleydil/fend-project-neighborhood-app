@@ -23,8 +23,8 @@ img {
   color: #61dafb;
 }
 
-.map {
-  height: 300px;
+.map-container {
+  height: 500px;
   width: 100%;
 }
 
@@ -43,6 +43,7 @@ img {
 
 .item-detail {
   border-top: 1px solid gray;
+  padding: 10px;
 }
 
 .item-detail h2 {
@@ -52,4 +53,11 @@ img {
 
 .item-detail p {
   margin: 0;
+}
+
+footer {
+  padding: 10px;
+  font-size: .7em;
+  border-top: 1px solid black;
+  background-color: #e2f4e6;
 }

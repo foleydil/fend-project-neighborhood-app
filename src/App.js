@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import Map from './components/Map';
 import DetailList from './components/DetailList';
+import Footer from './components/Footer';
 import './App.css';
 
 class App extends Component {
@@ -13,6 +14,7 @@ class App extends Component {
           <Map/>
           <DetailList/>
         </main>
+        <Footer/>
       </div>
     );
   }
