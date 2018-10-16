@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ItemDetail from './ItemDetail';
 
 class DetailList extends Component {
   state = {
@@ -16,23 +17,12 @@ class DetailList extends Component {
             value={this.state.query}
             onChange={(event) => this.updateQuery(event.target.value)}
           />
-          <button className='toggle-search'>^</button>
+          <button id='toggle-search' onClick={this.props.toggleSearch}>+ / -</button>
         </div>
 
-        <div>
-          <div className='item-detail'>
-            <img alt='Alt Text' src=''/>
-            <h2 className='item-name'>Name of Place</h2>
-            <p className='item-type'>Type of place (Restaurant, etc.)</p>
-            <p className='item-address'>1234 56th st, NY NY 78901</p>
-          </div>
-          <div className='item-detail'>
-            <img alt='Alt Text' src=''/>
-            <h2 className='item-name'>Name of Place</h2>
-            <p className='item-type'>Type of place (Restaurant, etc.)</p>
-            <p className='item-address'>1234 56th st, NY NY 78901</p>
-          </div>
-
+        <div id='item-list' style={{display: 'block'}}>
+          <ItemDetail/>
+          <ItemDetail/>
         </div>
       </div>
     )
