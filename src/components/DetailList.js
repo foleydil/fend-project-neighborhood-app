@@ -3,8 +3,7 @@ import ItemDetail from './ItemDetail';
 
 class DetailList extends Component {
   state = {
-    query: '',
-    results: []
+    query: ''
   }
 
   render() {
@@ -17,7 +16,11 @@ class DetailList extends Component {
             value={this.state.query}
             onChange={(event) => this.updateQuery(event.target.value)}
           />
-          <button id='toggle-search' onClick={this.props.toggleSearch}>+ / -</button>
+          <img
+            id='toggle-search'
+            alt='collapse-button'
+            onClick={this.props.toggleSearch}
+            src={window.location.origin + '/res/collapse-button.png'}/>
         </div>
 
         <div id='item-list' style={{display: 'block'}}>

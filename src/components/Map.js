@@ -14,7 +14,7 @@ class Map extends Component {
 
     return (
         <MapObject
-          containerElement = { <div className='map-container'/> }
+          containerElement = { <div id='map-container'/> }
           mapElement = { <div style={{height: '100%'}} /> }
         />
     );
