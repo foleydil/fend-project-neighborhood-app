@@ -26,6 +26,8 @@ class DetailList extends Component {
         <div id='item-list' style={{display: 'block'}}>
           <ItemDetail/>
           <ItemDetail/>
+          <ItemDetail/>
+          <ItemDetail/>
         </div>
       </div>
     )

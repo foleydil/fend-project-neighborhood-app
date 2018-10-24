@@ -1,3 +1,16 @@
+html, body {
+  height: 100%;
+  position: relative;
+}
+
+main {
+  min-height: 100vh;
+  overflow: hidden;
+  display: block;
+  position: relative;
+  padding-bottom: 20px;
+}
+
 .App {
   text-align: center;
 }
@@ -20,7 +33,7 @@
 
 /* MAP */
 
-#map-container {
+#map {
   height: 300px;
   width: 100%;
   border-bottom: black solid 1px;
@@ -28,6 +41,10 @@
 
 
 /* SEARCH BAR */
+
+.search-bar-container {
+  border-bottom: black solid 1px;
+}
 
 .search-bar-container input {
   display: inline-block;
@@ -89,6 +106,10 @@
 /* FOOTER */
 
 footer {
+  position: absolute;
+  bottom: 0;
+  height: 20px;
+  width: 100%;
   padding: 10px;
   font-size: .7em;
   border-top: 1px solid black;
