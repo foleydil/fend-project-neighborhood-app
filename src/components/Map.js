@@ -6,24 +6,40 @@ class Map extends Component {
     this.loadMap();
   }
 
+  componentDidUpdate() {
+    this.initMarkers(window.map)
+  }
+
   loadMap = () => {
     loadGoogleMapsScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyBe0pZu9OZtaR14XD_kcXjYwGQWyMfPKTg&callback=initMap');
     window.initMap = this.initMap;
   }
 
   initMap = () => {
-    const map = new window.google.maps.Map(document.getElementById('map'), {
+    window.map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: 42.488598, lng: -83.144647},
-      zoom: 13
+      zoom: 16
     });
+    return this.initMarkers(window.map)
   }
 
-  render() {
-    let markerLatLngs = [];
+  initMarkers = (map) => {
+    console.log('initializing markers for:')
+    console.log(this.props.locations)
     for (let loc of this.props.locations) {
-      markerLatLngs.push(loc.coordinates);
+      new window.google.maps.Marker({
+        position: {
+          lat: loc.location.lat,
+          lng: loc.location.lng
+        },
+        map: map,
+        title: loc.name
+      })
     }
+  }
 
+
+  render() {
     return (
         <div id='map'></div>
     );

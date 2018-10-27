@@ -20,12 +20,17 @@ class App extends Component {
     this.getFoursquareBusinesses();
   }
 
+  //Retrieve array of location objects from FourSquare API, set app state - locations to this array
   getFoursquareBusinesses() {
-    fetch(`https://api.foursquare.com/v2/venues/search?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&radius=100&ll=${royalOakLatLong}`)
+    fetch(`https://api.foursquare.com/v2/venues/explore?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=20&radius=250&ll=${royalOakLatLong}`)
         .then(response => response.json())
-        .then(result => {
+        .then(results => {
+          let locations = []
+          for (let res of results.response.groups[0].items) {
+            locations.push(res.venue)
+          }
           return this.setState( {
-            locations: result.response.venues
+            locations: locations
           })
         })
         .catch(function(error) {
@@ -33,7 +38,8 @@ class App extends Component {
         });
     }
 
-
+  //Method to toggle whether list of locations is shown at bottom of screen.
+  //passed a prop to DetailList.js
   toggleSearch() {
     let resultsArea=document.getElementById('item-list');
     if (resultsArea.style.display === "block") {
@@ -42,12 +48,15 @@ class App extends Component {
       document.getElementById('toggle-search').src = window.location.origin + '/res/expand-button.png';
     } else {
       resultsArea.style.display = "block";
-      document.getElementById('map').style.height='300px';
+      document.getElementById('map').style.height='50vh';
       document.getElementById('toggle-search').src = window.location.origin + '/res/collapse-button.png';
     }
   }
 
+
   render() {
+    //Temporary code to monitor locations in app state
+    console.log("current state: ")
     console.log(this.state)
 
     return (
