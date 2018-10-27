@@ -24,8 +24,6 @@ class Map extends Component {
       markerLatLngs.push(loc.coordinates);
     }
 
-    console.log(markerLatLngs);
-
     return (
         <div id='map'></div>
     );

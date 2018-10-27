@@ -6,6 +6,10 @@ class DetailList extends Component {
     query: ''
   }
 
+  updateQuery = (query) => {
+    this.setState( {query: query} )
+  }
+
   render() {
     return (
       <div className='detailList'>
