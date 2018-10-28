@@ -7,6 +7,7 @@ class Map extends Component {
   }
 
   componentDidUpdate() {
+    console.log(this.props.displayedLocations);
     this.initMarkers(window.map)
   }
 
@@ -23,9 +24,16 @@ class Map extends Component {
     return this.initMarkers(window.map)
   }
 
+  //Array of currently displayed markers
+  markers = [];
   initMarkers = (map) => {
-    for (let loc of this.props.locations) {
-      new window.google.maps.Marker({
+    //clear existing markers
+    for (let m of this.markers) {
+      m.setMap(null);
+    }
+
+    for (let loc of this.props.displayedLocations) {
+      let marker = new window.google.maps.Marker({
         position: {
           lat: loc.location.lat,
           lng: loc.location.lng
@@ -33,6 +41,7 @@ class Map extends Component {
         map: map,
         title: loc.name
       })
+      this.markers.push(marker)
     }
   }
 

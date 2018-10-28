@@ -7,7 +7,8 @@ class DetailList extends Component {
   }
 
   updateQuery = (query) => {
-    this.setState( {query: query} )
+    this.setState( {query: query} );
+    this.props.updateSearch(query);
   }
 
   render() {
@@ -28,7 +29,7 @@ class DetailList extends Component {
         </div>
 
         <div id='item-list' style={{display: 'block'}}>
-          {this.props.locations.map((location, key) =>
+          {this.props.displayedLocations.map((location, key) =>
             <ItemDetail
               location={location}
               key={key}

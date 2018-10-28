@@ -8,7 +8,7 @@ class ItemDetail extends Component {
 
       <div className='item-detail'>
         <img className='lock-toggle-icon' alt='unlocked icon' src={window.location.origin + '/res/002-unlock.png'}/>
-        <img className='location-photo' alt='Alt Text' src=''/>
+        <img className='location-photo' alt={this.props.location.categories[0].shortName + ' icon'} src={this.props.location.categories[0].icon.prefix + 'bg_64' + this.props.location.categories[0].icon.suffix}/>
           <div className='item-info-container'>
             <h2 className='item-name'>{this.props.location.name}</h2>
             <p className='item-type'>{this.props.location.categories[0].shortName}</p>
