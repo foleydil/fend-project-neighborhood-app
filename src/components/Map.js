@@ -24,8 +24,6 @@ class Map extends Component {
   }
 
   initMarkers = (map) => {
-    console.log('initializing markers for:')
-    console.log(this.props.locations)
     for (let loc of this.props.locations) {
       new window.google.maps.Marker({
         position: {

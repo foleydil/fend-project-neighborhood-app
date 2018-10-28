@@ -55,15 +55,16 @@ class App extends Component {
 
 
   render() {
-    //Temporary code to monitor locations in app state
-    console.log("current state: ")
-    console.log(this.state)
+    console.log(this.state.locations)
 
     return (
       <div className="App">
         <main>
           <Map locations={this.state.locations}/>
-          <DetailList toggleSearch={this.toggleSearch}/>
+          <DetailList
+            toggleSearch={this.toggleSearch}
+            locations={this.state.locations}
+          />
           <Footer/>
         </main>
       </div>

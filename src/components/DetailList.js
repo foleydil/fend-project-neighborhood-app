@@ -28,10 +28,12 @@ class DetailList extends Component {
         </div>
 
         <div id='item-list' style={{display: 'block'}}>
-          <ItemDetail/>
-          <ItemDetail/>
-          <ItemDetail/>
-          <ItemDetail/>
+          {this.props.locations.map((location, key) =>
+            <ItemDetail
+              location={location}
+              key={key}
+            />
+          )}
         </div>
       </div>
     )
