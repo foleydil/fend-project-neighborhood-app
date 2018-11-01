@@ -8,7 +8,8 @@ import './App.css';
 
 const foursquareClientID = 'MAF4ZMHNH0CDXW3KSRDM1O5R5ZPJFQNWWVBSNV3FB1YBUOVR'
 const foursquareClientSecret = 'PZRARRAI1ARZGKJCE4BG5IXGOHJHLBLCQUDO3I0A0RVSQ43D'
-const royalOakLatLong = '42.489878, -83.144327'
+//LatLong drives locations called to from Foursquare API. (Currently ROYAL OAK, MI)
+const LatLong = '42.489878, -83.144327'
 
 class App extends Component {
 
@@ -23,9 +24,10 @@ class App extends Component {
     this.getFoursquareBusinesses();
   }
 
-  //Retrieve array of location objects from FourSquare API, set app state - locations to this array
+  //Method to retrieve array of location objects from FourSquare API
+  // & set app state to locations to this array.
   getFoursquareBusinesses() {
-    fetch(`https://api.foursquare.com/v2/venues/explore?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=20&radius=250&ll=${royalOakLatLong}&intent=browse`)
+    fetch(`https://api.foursquare.com/v2/venues/explore?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=20&radius=250&ll=${LatLong}&intent=browse`)
         .then(response => response.json())
         .then(results => {
           let locations = []

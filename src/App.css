@@ -108,6 +108,11 @@ main {
 }
 
 
+/* INFO WINDOW */
+.info-window-address {
+  list-style-type: none;
+}
+
 /* FOOTER */
 
 footer {

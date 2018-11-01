@@ -1,3 +1,5 @@
+//Component for search bar and list of search results
+
 import React, { Component } from 'react';
 import ItemDetail from './ItemDetail';
 
@@ -6,6 +8,7 @@ class DetailList extends Component {
     query: ''
   }
 
+  //set state to user input when a search is made, callback to update displayedLocations in App.js
   updateQuery = (query) => {
     this.setState( {query: query} );
     this.props.updateSearch(query);
