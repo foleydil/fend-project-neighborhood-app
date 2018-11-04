@@ -20,7 +20,6 @@ class Map extends Component {
       center: {lat: 42.488598, lng: -83.144647},
       zoom: 16
     });
-    return this.initMarkers(window.map)
   }
 
   //method to update displayed markers upon user search
@@ -44,6 +43,9 @@ class Map extends Component {
       m.setMap(null);
     }
 
+    //infowindow object created outside loop to ensure only one is showing at a time
+    let newInfowindow = new window.google.maps.InfoWindow()
+
     //generate markers for displayedLocations
     for (let loc of this.props.displayedLocations) {
       let marker = new window.google.maps.Marker({
@@ -54,9 +56,6 @@ class Map extends Component {
         map: map,
         title: loc.name
       })
-
-      //infowindow object created outside loop to ensure only one is showing at a time
-      let newInfowindow = new window.google.maps.InfoWindow()
 
       //content string for InfoWindow
       let contentString =

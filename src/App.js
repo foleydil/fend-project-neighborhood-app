@@ -50,7 +50,7 @@ class App extends Component {
     let resultsArea=document.getElementById('item-list');
     if (resultsArea.style.display === "block") {
       resultsArea.style.display = "none";
-      document.getElementById('map').style.height='500px';
+      document.getElementById('map').style.height='calc(100vh - 53px)';
       document.getElementById('toggle-search').src = window.location.origin + '/res/expand-button.png';
     } else {
       resultsArea.style.display = "block";

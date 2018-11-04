@@ -6,13 +6,9 @@ html, body {
 main {
   min-height: 100vh;
   overflow: hidden;
-  display: block;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  padding-bottom: 20px;
-}
-
-.App {
-  text-align: center;
 }
 
 .App-header {
@@ -44,11 +40,26 @@ main {
 
 .search-bar-container {
   border-bottom: black solid 1px;
+  display: flex;
+  align-items: center;
+}
+
+.search-label {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding-left: 20px;
+  padding-right: 10px;
+}
+
+.search-label h2 {
+  font-size: 1.25em;
+  margin: 0;
+  color: #717171;
 }
 
 .search-bar-container input {
   display: inline-block;
-  vertical-align: middle;
   height: 50px;
   width: 80%;
   font-size: 1.25em;
@@ -57,7 +68,6 @@ main {
 }
 
 #toggle-search {
-  vertical-align: middle;
   height: 25px;
   width: 30px;
   border: none;
@@ -67,14 +77,11 @@ main {
 
 /* SEARCH RESULTS */
 
-#item-list {
-  margin-bottom: 20px;
-}
-
 .item-detail {
   display: flex;
   align-items: center;
   border-top: 1px solid gray;
+  cursor: pointer;
 }
 
 .item-detail h2 {
@@ -98,8 +105,7 @@ main {
   border: 1px solid black;
   width: 80px;
   height: 80px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin: 5px;
 }
 
 .item-info-container{
@@ -116,8 +122,6 @@ main {
 /* FOOTER */
 
 footer {
-  position: absolute;
-  bottom: 0;
   height: 20px;
   width: 100%;
   padding: 10px;

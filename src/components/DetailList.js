@@ -18,6 +18,9 @@ class DetailList extends Component {
     return (
       <div className='detailList'>
         <div className='search-bar-container'>
+          <div className='search-label'>
+            <h2>Search: </h2>
+          </div>
           <input
             type="text"
             placeholder="Search neighborhood places"

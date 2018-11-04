@@ -7,7 +7,6 @@ class ItemDetail extends Component {
   render() {
     return (
       <div className='item-detail'>
-        <img className='lock-toggle-icon' alt='unlocked icon' src={window.location.origin + '/res/002-unlock.png'}/>
         <img className='location-photo' alt={this.props.location.categories[0].shortName + ' icon'} src={this.props.location.categories[0].icon.prefix + 'bg_64' + this.props.location.categories[0].icon.suffix}/>
           <div className='item-info-container'>
             <h2 className='item-name'>{this.props.location.name}</h2>
@@ -20,3 +19,6 @@ class ItemDetail extends Component {
 }
 
 export default ItemDetail;
+
+//Below snippet saved for item "locking" functionality, if I have time 
+//<img className='lock-toggle-icon' alt='unlocked icon' src={window.location.origin + '/res/002-unlock.png'}/>
