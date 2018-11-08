@@ -4,9 +4,13 @@ import React, { Component } from 'react';
 
 class Map extends Component {
 
-    //method to update displayed markers upon user search
+  //Update markers when component is re-rendered (anytime displayedLocations changes in App.js)
+  componentDidMount() {
+  }
+
   componentDidUpdate() {
     this.props.initMarkers();
+    this.props.updateMarkers();
   }
 
   render() {

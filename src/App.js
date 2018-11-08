@@ -63,16 +63,12 @@ class App extends Component {
     return infoWindow.open(map, marker);
   }
 
+  markers = [];
+
   //update markers array to match displayedLocations
   //passed as prop to Map.js
   initMarkers = () => {
     console.log(this.state.displayedLocations)
-    //TODO: CLEAR EXISTING MARKERS ON SEARCH
-    for (let l of this.state.displayedLocations) {
-      if (l.marker) {
-        l.marker.setVisible(false)
-      }
-    }
 
     //infowindow object created outside loop to ensure only one is showing at a time
     let newInfowindow = new window.google.maps.InfoWindow()
@@ -85,7 +81,8 @@ class App extends Component {
           lng: loc.location.lng
         },
         map: window.map,
-        title: loc.name
+        title: loc.name,
+        id: loc.id
       })
 
       //content string for InfoWindow
@@ -106,8 +103,45 @@ class App extends Component {
         newInfowindow.open(window.map, marker);
       });
 
-      loc.marker = marker
+      this.markers.push(marker);
     }
+  }
+
+  //Helper funcftion, clears all markers by setting visibility to false
+  setMarkersInvisible = () => {
+    for (let m of this.markers) {
+      m.setVisible(false);
+    }
+  }
+
+  //add visibility to markers based on current state.
+  //passed as a prop to Map.js
+  updateMarkers = () => {
+    this.setMarkersInvisible();
+    let dispLocIDs = []
+    for (let loc of this.state.displayedLocations) {
+      dispLocIDs.push(loc.id)
+    }
+    for (let m of this.markers) {
+      if (dispLocIDs.includes(m.id)) {
+        m.setVisible(true);
+      }
+    }
+  }
+
+  //method causing marker to bounce for 2 seconds. called when user
+  //a marker or a list item. Passed as a method to detailList>ItemDetail
+  bounceMarker = (id) => {
+    //check ID of list item that was clicked, then match proper marker to bounce
+    let locID = this.state.displayedLocations.filter(l => {return l.id === id })[0].id
+    let m = this.markers.filter(m => {return m.id === locID})[0]
+    if (m.getAnimation() !== null) {
+      m.setAnimation(null);
+    }
+    m.setAnimation(window.google.maps.Animation.BOUNCE)
+    setTimeout(function(){
+      m.setAnimation(null)
+    }, 2000)
   }
 
   //Method to toggle whether list of locations is shown at bottom of screen.
@@ -139,10 +173,14 @@ class App extends Component {
     return (
       <div className="App">
         <main>
-          <Map initMarkers={this.initMarkers}/>
+          <Map
+            initMarkers={this.initMarkers}
+            updateMarkers={this.updateMarkers}
+            />
           <DetailList
             toggleSearch={this.toggleSearch}
             updateSearch={this.updateSearch}
+            bounceMarker={this.bounceMarker}
             locations={this.state.locations}
             displayedLocations={this.state.displayedLocations}
           />

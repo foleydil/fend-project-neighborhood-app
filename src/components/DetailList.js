@@ -37,6 +37,7 @@ class DetailList extends Component {
         <div id='item-list' style={{display: 'block'}}>
           {this.props.displayedLocations.map((location, key) =>
             <ItemDetail
+              bounceMarker={this.props.bounceMarker}
               location={location}
               key={key}
             />

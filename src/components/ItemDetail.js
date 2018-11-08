@@ -1,10 +1,13 @@
 //Component with location info, displayed in search results area "DetailList"
 
-import React, { Component } from 'react';
+import React from 'react';
 
 function ItemDetail (props) {
   return (
-    <div className='item-detail'>
+    <div
+      className='item-detail'
+      onClick={() => {return props.bounceMarker(props.location.id)}}
+    >
       <img
         className='location-photo'
         alt={props.location.categories[0].shortName + ' icon'}
