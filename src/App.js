@@ -20,30 +20,30 @@ class App extends Component {
     displayedLocations: []
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.loadMap();
-    this.getFoursquareBusinesses();
+
+    //Method to retrieve array of location objects from FourSquare API
+    // & set app state to locations to this array.
+    await fetch(`https://api.foursquare.com/v2/venues/explore?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=20&radius=250&ll=${LatLong}&intent=browse`)
+    .then(response => response.json())
+    .then(results => {
+      let locations = []
+      for (let res of results.response.groups[0].items) {
+        locations.push(res.venue)
+      }
+      return this.setState( {
+        locations: locations,
+        displayedLocations: locations
+      })
+    })
+    .catch(function(error) {
+      console.log("Error: " + error)
+    });
+
+    this.initMarkers();
   }
 
-  //Method to retrieve array of location objects from FourSquare API
-  // & set app state to locations to this array.
-  getFoursquareBusinesses() {
-    fetch(`https://api.foursquare.com/v2/venues/explore?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=20&radius=250&ll=${LatLong}&intent=browse`)
-        .then(response => response.json())
-        .then(results => {
-          let locations = []
-          for (let res of results.response.groups[0].items) {
-            locations.push(res.venue)
-          }
-          return this.setState( {
-            locations: locations,
-            displayedLocations: locations
-          })
-        })
-        .catch(function(error) {
-          console.log("Error: " + error)
-        });
-    }
 
   loadMap = () => {
     loadGoogleMapsScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyBe0pZu9OZtaR14XD_kcXjYwGQWyMfPKTg&callback=initMap');
@@ -68,7 +68,6 @@ class App extends Component {
   //update markers array to match displayedLocations
   //passed as prop to Map.js
   initMarkers = () => {
-    console.log(this.state.displayedLocations)
 
     //infowindow object created outside loop to ensure only one is showing at a time
     let newInfowindow = new window.google.maps.InfoWindow()
@@ -117,6 +116,8 @@ class App extends Component {
   //add visibility to markers based on current state.
   //passed as a prop to Map.js
   updateMarkers = () => {
+    console.log(this.state.displayedLocations)
+
     this.setMarkersInvisible();
     let dispLocIDs = []
     for (let loc of this.state.displayedLocations) {
@@ -173,10 +174,7 @@ class App extends Component {
     return (
       <div className="App">
         <main>
-          <Map
-            initMarkers={this.initMarkers}
-            updateMarkers={this.updateMarkers}
-            />
+          <Map updateMarkers={this.updateMarkers}/>
           <DetailList
             toggleSearch={this.toggleSearch}
             updateSearch={this.updateSearch}
