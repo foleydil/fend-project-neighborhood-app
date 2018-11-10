@@ -54,8 +54,13 @@ class App extends Component {
   initMap = () => {
     window.map = new window.google.maps.Map(document.getElementById('map'), {
       center: {lat: 42.488598, lng: -83.144647},
-      zoom: 16
+      zoom: 17
     });
+  }
+
+  centerMapOnMarker = (marker) => {
+    var latLng = marker.getPosition(); // returns LatLng object
+    window.map.panTo(latLng); // setCenter takes a LatLng object
   }
 
   //method to open infowindow when marker is clicked
@@ -63,16 +68,11 @@ class App extends Component {
     return infoWindow.open(map, marker);
   }
 
-  //Helper function for managing rate limits on Foursquare API
-  sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   markers = [];
 
   //update markers array to match displayedLocations
   //passed as prop to Map.js
-  initMarkers = async () => {
+  initMarkers = () => {
 
     //infowindow object created outside loop to ensure only one is showing at a time
     let newInfowindow = new window.google.maps.InfoWindow()
@@ -90,28 +90,28 @@ class App extends Component {
         id: loc.id
       })
 
-      //fetch photo source for venue:
-      let locPhotoURL = "https://i.imgur.com/ZJE8MJw.png"
 
-      //TODO: UNCOMMENT WHEN READY TO MAKE FOURSQUARE PREMIUM CALLS
-      // await fetch(`https://api.foursquare.com/v2/venues/${loc.id}/photos?
-      //   client_id=${foursquareClientID}
-      //   &client_secret=${foursquareClientSecret}
-      //   &v=20180323
-      //   &limit=1`)
-      //   .then(response => response.json())
-      //   .then(results =>
-      //     locPhotoURL = results.response.photos.items[0].prefix + '100x100' + results.response.photos.items[0].suffix)
-      //   .catch(function(error) {
-      //     console.log("Error: " + error)
-      //   })
 
-      //content string for InfoWindow
-      let contentString =
+      //Listener for markers, updates & opens infowindow on click
+      marker.addListener('click', async function() {
+        //fetch photo source for venue:
+        let locPhotoURL = "https://i.imgur.com/ZJE8MJw.png"
+
+        //UNCOMMENT WHEN READY TO MAKE FOURSQUARE PREMIUM CALLS
+        await fetch(`https://api.foursquare.com/v2/venues/${loc.id}/photos?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=1`)
+          .then(response => response.json())
+          .then(results =>
+              locPhotoURL = results.response.photos.items[0].prefix + '100x100' + results.response.photos.items[0].suffix)
+            .catch(function(error) {
+                console.log("Error: " + error)
+              })
+
+        //content string for InfoWindow
+        let contentString =
         `<div class='info-window'}>
           <h3>${loc.name}</h3>
           <figure>
-            <img class='infowindow-image' src=${locPhotoURL} alt=${loc.name} photo>
+            <img class='infowindow-image' src=${locPhotoURL} alt="${loc.name} photo">
             <figcaption> Photo courtesy of Foursquare </figcaption>
           </figure>
           <ul class='info-window-address'>
@@ -120,16 +120,12 @@ class App extends Component {
           </ul>
         </div>`
 
-      //Listener for markers, updates & opens infowindow on click
-      marker.addListener('click', function() {
         //update infoWindow content
         newInfowindow.setContent(contentString)
         newInfowindow.open(window.map, marker);
       });
 
       this.markers.push(marker);
-      //uncomment to avoid foursquare API 2 call/second rate limit
-      //await this.sleep(501)
     }
   }
 
@@ -163,6 +159,8 @@ class App extends Component {
     //check ID of list item that was clicked, then match proper marker to bounce
     let locID = this.state.displayedLocations.filter(l => {return l.id === id })[0].id
     let m = this.markers.filter(m => {return m.id === locID})[0]
+    //Center map on marker
+    this.centerMapOnMarker(m);
     if (m.getAnimation() !== null) {
       m.setAnimation(null);
     }

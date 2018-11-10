@@ -6,10 +6,13 @@ function ItemDetail (props) {
   return (
     <div
       className='item-detail'
+      tabIndex='0'
+      role='button'
       onClick={() => {return props.bounceMarker(props.location.id)}}
+      onKeyPress={() => {return props.bounceMarker(props.location.id)}}
     >
       <img
-        className='location-photo'
+        className='location-icon'
         alt={props.location.categories[0].shortName + ' icon'}
         src={props.location.categories[0].icon.prefix + 'bg_64' + props.location.categories[0].icon.suffix}
       />

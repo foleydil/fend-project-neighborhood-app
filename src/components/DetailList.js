@@ -22,12 +22,14 @@ class DetailList extends Component {
             <h2>Search: </h2>
           </div>
           <input
+            id="search-input"
             type="text"
             placeholder="Search neighborhood places"
             value={this.state.query}
             onChange={(event) => this.updateQuery(event.target.value)}
           />
-          <img
+          <input
+            type='image'
             id='toggle-search'
             alt='collapse-button'
             onClick={this.props.toggleSearch}
