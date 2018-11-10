@@ -38,10 +38,14 @@ class App extends Component {
       })
     })
     .catch(function(error) {
-      console.log("Error: " + error)
+      return console.log("Error: " + error)
     });
 
-    this.initMarkers();
+    try {
+      this.initMarkers();
+    } catch (e) {
+      console.log("No locations to display! Check internet connection. Error: " + e)
+    }
   }
 
 
