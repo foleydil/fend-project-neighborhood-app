@@ -21,11 +21,11 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    this.loadMap();
+    await this.loadMap();
 
-    //Method to retrieve array of location objects from FourSquare API
-    // & set app state to locations to this array.
-    await fetch(`https://api.foursquare.com/v2/venues/explore?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=20&radius=250&ll=${LatLong}&intent=browse`)
+    //Retrieve array of location objects from FourSquare API
+    // & set app state to locations to this array. Wait for this to finish before intializing markers
+    await fetch(`https://api.foursquare.com/v2/venues/explore?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=20&radius=250&ll=${LatLong}&venuePhotos=1&intent=browse`)
     .then(response => response.json())
     .then(results => {
       let locations = []
@@ -46,7 +46,7 @@ class App extends Component {
 
 
   loadMap = () => {
-    loadGoogleMapsScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyBe0pZu9OZtaR14XD_kcXjYwGQWyMfPKTg&callback=initMap');
+    loadGoogleMapsScript(`https://maps.googleapis.com/maps/api/js?key=AIzaSyBe0pZu9OZtaR14XD_kcXjYwGQWyMfPKTg&callback=initMap`);
     window.initMap = this.initMap;
   }
 
@@ -63,16 +63,22 @@ class App extends Component {
     return infoWindow.open(map, marker);
   }
 
+  //Helper function for managing rate limits on Foursquare API
+  sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   markers = [];
 
   //update markers array to match displayedLocations
   //passed as prop to Map.js
-  initMarkers = () => {
+  initMarkers = async () => {
 
     //infowindow object created outside loop to ensure only one is showing at a time
     let newInfowindow = new window.google.maps.InfoWindow()
 
-    //generate markers for displayedLocations
+    //generate markers for displayedLocations, and add infoWindows
+    //this includes async call to Foursquare to retrieve venue photos.
     for (let loc of this.state.displayedLocations) {
       let marker = new window.google.maps.Marker({
         position: {
@@ -84,11 +90,30 @@ class App extends Component {
         id: loc.id
       })
 
+      //fetch photo source for venue:
+      let locPhotoURL = "https://i.imgur.com/ZJE8MJw.png"
+
+      //TODO: UNCOMMENT WHEN READY TO MAKE FOURSQUARE PREMIUM CALLS
+      // await fetch(`https://api.foursquare.com/v2/venues/${loc.id}/photos?
+      //   client_id=${foursquareClientID}
+      //   &client_secret=${foursquareClientSecret}
+      //   &v=20180323
+      //   &limit=1`)
+      //   .then(response => response.json())
+      //   .then(results =>
+      //     locPhotoURL = results.response.photos.items[0].prefix + '100x100' + results.response.photos.items[0].suffix)
+      //   .catch(function(error) {
+      //     console.log("Error: " + error)
+      //   })
+
       //content string for InfoWindow
       let contentString =
         `<div class='info-window'}>
           <h3>${loc.name}</h3>
-          <img src='' alt=${loc.name} photo>
+          <figure>
+            <img class='infowindow-image' src=${locPhotoURL} alt=${loc.name} photo>
+            <figcaption> Photo courtesy of Foursquare </figcaption>
+          </figure>
           <ul class='info-window-address'>
             <li>${loc.location.formattedAddress[0]}</li>
             <li>${loc.location.formattedAddress[1]}</li>
@@ -103,6 +128,8 @@ class App extends Component {
       });
 
       this.markers.push(marker);
+      //uncomment to avoid foursquare API 2 call/second rate limit
+      //await this.sleep(501)
     }
   }
 

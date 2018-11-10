@@ -115,8 +115,32 @@ main {
 
 
 /* INFO WINDOW */
+.info-window {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+}
+
+.info-window h3 {
+  text-align: center;
+}
+
+figure {
+  text-align: center;
+  margin: 0;
+}
+
 .info-window-address {
   list-style-type: none;
+}
+
+.infowindow-image {
+  height: 60px;
+  width: 60px;
+}
+
+figcaption {
+  font-size: .75em;
 }
 
 /* FOOTER */
