@@ -8,6 +8,7 @@ import './App.css';
 
 const foursquareClientID = 'MAF4ZMHNH0CDXW3KSRDM1O5R5ZPJFQNWWVBSNV3FB1YBUOVR'
 const foursquareClientSecret = 'PZRARRAI1ARZGKJCE4BG5IXGOHJHLBLCQUDO3I0A0RVSQ43D'
+const googleMapsKey = 'AIzaSyBe0pZu9OZtaR14XD_kcXjYwGQWyMfPKTg'
 //LatLong drives locations called to from Foursquare API. (Currently ROYAL OAK, MI)
 const LatLong = '42.489878, -83.144327'
 
@@ -44,13 +45,14 @@ class App extends Component {
     try {
       this.initMarkers();
     } catch (e) {
-      console.log("No locations to display! Check internet connection. Error: " + e)
+      console.log("No locations to display! Check internet connection.")
+      window.alert("No locations to display! Check internet connection.")
     }
   }
 
 
   loadMap = () => {
-    loadGoogleMapsScript(`https://maps.googleapis.com/maps/api/js?key=AIzaSyBe0pZu9OZtaR14XD_kcXjYwGQWyMfPKTg&callback=initMap`);
+    loadGoogleMapsScript(`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&callback=initMap`);
     window.initMap = this.initMap;
   }
 
@@ -77,7 +79,6 @@ class App extends Component {
   //update markers array to match displayedLocations
   //passed as prop to Map.js
   initMarkers = () => {
-
     //infowindow object created outside loop to ensure only one is showing at a time
     let newInfowindow = new window.google.maps.InfoWindow()
 
@@ -124,7 +125,7 @@ class App extends Component {
           </ul>
         </div>`
 
-        //update infoWindow content
+          //update infoWindow content
         newInfowindow.setContent(contentString)
         newInfowindow.open(window.map, marker);
       });
@@ -222,11 +223,18 @@ export default App;
 
 //Vanilla JS function to load google Maps script when app initially loads
 function loadGoogleMapsScript(url) {
+  function loadError() {window.alert("Error loading Google Maps script")}
+
   let index = window.document.getElementsByTagName('script')[0];
+  index.onerror = loadError;
   let script = window.document.createElement('script');
+  script.onerror = loadError;
   script.src = url;
   script.async = true;
   script.defer = true;
+  window.gm_authFailure = () => {
+    window.alert("Google Maps authentication error.")
+};
 
   index.parentNode.insertBefore(script, index);
 }
