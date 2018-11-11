@@ -11,7 +11,12 @@ class Map extends Component {
 
   render() {
     return (
-        <div id='map'></div>
+        <div
+          id='map'
+          aria-label='Map'
+          role='application'
+        >
+        </div>
     );
   }
 }

@@ -25,6 +25,7 @@ class DetailList extends Component {
             id="search-input"
             type="text"
             placeholder="Search neighborhood places"
+            aria-label="Search bar"
             value={this.state.query}
             onChange={(event) => this.updateQuery(event.target.value)}
           />
@@ -32,6 +33,7 @@ class DetailList extends Component {
             type='image'
             id='toggle-search'
             alt='collapse-button'
+            aria-label="Collapse button"
             onClick={this.props.toggleSearch}
             src={window.location.origin + '/res/collapse-button.png'}/>
         </div>

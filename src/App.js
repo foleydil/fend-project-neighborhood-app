@@ -39,6 +39,7 @@ class App extends Component {
       })
     })
     .catch(function(error) {
+      window.alert("Problem fetching locations from FourSquare. Refresh the page to try again.")
       return console.log("Error: " + error)
     });
 
