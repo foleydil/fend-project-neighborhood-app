@@ -40,6 +40,7 @@ class DetailList extends Component {
           {this.props.displayedLocations.map((location, key) =>
             <ItemDetail
               bounceMarker={this.props.bounceMarker}
+              openInfoWindow={this.props.openInfoWindow}
               location={location}
               key={key}
             />

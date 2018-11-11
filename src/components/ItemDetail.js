@@ -8,8 +8,14 @@ function ItemDetail (props) {
       className='item-detail'
       tabIndex='0'
       role='button'
-      onClick={() => {return props.bounceMarker(props.location.id)}}
-      onKeyPress={() => {return props.bounceMarker(props.location.id)}}
+      onClick={() => {
+        props.bounceMarker(props.location.id);
+        props.openInfoWindow(props.location, props.location.marker)
+      }}
+      onKeyPress={() => {
+        props.bounceMarker(props.location.id)
+        props.openInfoWindow(props.location, props.location.marker)
+      }}
     >
       <img
         className='location-icon'

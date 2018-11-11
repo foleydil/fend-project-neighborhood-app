@@ -50,7 +50,6 @@ class App extends Component {
     }
   }
 
-
   loadMap = () => {
     loadGoogleMapsScript(`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&callback=initMap`);
     window.initMap = this.initMap;
@@ -62,6 +61,8 @@ class App extends Component {
       center: {lat: 42.488598, lng: -83.144647},
       zoom: 17
     });
+    //infowindow object created outside loop to ensure only one is showing at a time
+    window.infoWindow = new window.google.maps.InfoWindow()
   }
 
   centerMapOnMarker = (marker) => {
@@ -69,22 +70,44 @@ class App extends Component {
     window.map.panTo(latLng); // setCenter takes a LatLng object
   }
 
-  //method to open infowindow when marker is clicked
-  openInfoWindow(map, marker, infoWindow) {
-    return infoWindow.open(map, marker);
+  //opens infowindow for a given location
+  //passed as prop to DetailList.js
+  async openInfoWindow(loc) {
+
+    //fetch photo source for venue:
+    let locPhotoURL = "https://i.imgur.com/ZJE8MJw.png"
+    await fetch(`https://api.foursquare.com/v2/venues/${loc.id}/photos?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=1`)
+    .then(response => response.json())
+    .then(results =>
+      locPhotoURL = results.response.photos.items[0].prefix + '100x100' + results.response.photos.items[0].suffix)
+      .catch(function(error) {
+        console.log("Error retrieving location photo: " + error)
+    })
+
+    //content string for InfoWindow
+    let contentString =
+    `<div class='info-window'}>
+    <h3>${loc.name}</h3>
+    <figure>
+    <img class='infowindow-image' src=${locPhotoURL} alt="${loc.name} photo">
+    <figcaption> Photo courtesy of Foursquare </figcaption>
+    </figure>
+    <ul class='info-window-address'>
+    <li>${loc.location.formattedAddress[0]}</li>
+    <li>${loc.location.formattedAddress[1]}</li>
+    </ul>
+    </div>`
+
+    //update infoWindow content
+    window.infoWindow.setContent(contentString)
+    window.infoWindow.open(window.map, loc.marker);
   }
 
-  markers = [];
-
-  //update markers array to match displayedLocations
+  //initialize markers and add to state.locations
   //passed as prop to Map.js
   initMarkers = () => {
-    //infowindow object created outside loop to ensure only one is showing at a time
-    let newInfowindow = new window.google.maps.InfoWindow()
-
-    //generate markers for displayedLocations, and add infoWindows
-    //this includes async call to Foursquare to retrieve venue photos.
-    for (let loc of this.state.displayedLocations) {
+    //generate markers for all state.locations
+    for (let loc of this.state.locations) {
       let marker = new window.google.maps.Marker({
         position: {
           lat: loc.location.lat,
@@ -95,49 +118,18 @@ class App extends Component {
         id: loc.id
       })
 
-
-
       //Listener for markers, updates & opens infowindow on click
-      marker.addListener('click', async function() {
-        //fetch photo source for venue:
-        let locPhotoURL = "https://i.imgur.com/ZJE8MJw.png"
+      //includes async call to Foursquare to retrieve venue photos.
+      marker.addListener('click', () => this.openInfoWindow(loc, marker))
 
-        //UNCOMMENT WHEN READY TO MAKE FOURSQUARE PREMIUM CALLS
-        await fetch(`https://api.foursquare.com/v2/venues/${loc.id}/photos?client_id=${foursquareClientID}&client_secret=${foursquareClientSecret}&v=20180323&limit=1`)
-          .then(response => response.json())
-          .then(results =>
-              locPhotoURL = results.response.photos.items[0].prefix + '100x100' + results.response.photos.items[0].suffix)
-            .catch(function(error) {
-                console.log("Error: " + error)
-              })
-
-        //content string for InfoWindow
-        let contentString =
-        `<div class='info-window'}>
-          <h3>${loc.name}</h3>
-          <figure>
-            <img class='infowindow-image' src=${locPhotoURL} alt="${loc.name} photo">
-            <figcaption> Photo courtesy of Foursquare </figcaption>
-          </figure>
-          <ul class='info-window-address'>
-            <li>${loc.location.formattedAddress[0]}</li>
-            <li>${loc.location.formattedAddress[1]}</li>
-          </ul>
-        </div>`
-
-          //update infoWindow content
-        newInfowindow.setContent(contentString)
-        newInfowindow.open(window.map, marker);
-      });
-
-      this.markers.push(marker);
+      loc.marker = marker;
     }
   }
 
-  //Helper funcftion, clears all markers by setting visibility to false
+  //Helper function, clears all markers by setting visibility to false
   setMarkersInvisible = () => {
-    for (let m of this.markers) {
-      m.setVisible(false);
+    for (let loc of this.state.locations) {
+      loc.marker.setVisible(false);
     }
   }
 
@@ -146,14 +138,19 @@ class App extends Component {
   updateMarkers = () => {
     console.log(this.state.displayedLocations)
 
-    this.setMarkersInvisible();
+    try {
+      this.setMarkersInvisible();
+    } catch (e) {
+      return
+    }
+
     let dispLocIDs = []
     for (let loc of this.state.displayedLocations) {
       dispLocIDs.push(loc.id)
     }
-    for (let m of this.markers) {
-      if (dispLocIDs.includes(m.id)) {
-        m.setVisible(true);
+    for (let loc of this.state.locations) {
+      if (dispLocIDs.includes(loc.id)) {
+        loc.marker.setVisible(true);
       }
     }
   }
@@ -163,7 +160,8 @@ class App extends Component {
   bounceMarker = (id) => {
     //check ID of list item that was clicked, then match proper marker to bounce
     let locID = this.state.displayedLocations.filter(l => {return l.id === id })[0].id
-    let m = this.markers.filter(m => {return m.id === locID})[0]
+    let loc = this.state.locations.filter(loc => {return loc.id === locID})[0]
+    let m = loc.marker;
     //Center map on marker
     this.centerMapOnMarker(m);
     if (m.getAnimation() !== null) {
@@ -209,6 +207,7 @@ class App extends Component {
             toggleSearch={this.toggleSearch}
             updateSearch={this.updateSearch}
             bounceMarker={this.bounceMarker}
+            openInfoWindow={this.openInfoWindow}
             locations={this.state.locations}
             displayedLocations={this.state.displayedLocations}
           />
